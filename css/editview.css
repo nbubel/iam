@@ -1,0 +1,180 @@
+div#editview {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	margin: 0px;
+	background: rgb(100,100,100);
+	overflow-y: scroll;
+	/* in order for the fading-in to work we need to set height/width to 0%, changing the display property from none to block will result in a messed up transition */
+	height: 0%;
+	width: 0%;
+	opacity: 0.0;
+	transition: opacity 2.5s;
+}
+div#editview.overlay {
+	height: 100%;
+	width: 100%;
+	opacity: 0.95;
+}
+input, button, textarea, div.checkboxgroup, select {
+	width: 100%;
+	display: block;
+	margin: 0%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	font-family: "Avenir Medium", sans-serif;
+	font-size: 12pt;
+	padding-left: 1px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+input[type=radio] {
+	display: inline-block;
+	margin-right: 7px;
+	width: auto;
+}
+input[type=radio]:not(:first-of-type) {
+	margin-left: 15px;
+}
+label {
+	display: inline-block !important;
+	vertical-align: middle;
+}
+select option {
+	display: block;
+	height: auto;
+}
+/* MFM styles */
+output.validationMessages {
+	display: block;
+	color: red;
+	height: 15px;
+	margin-top: 0px;
+	padding-top: 0px;
+}
+input {
+	height: 30px;
+	border: 1px solid gray;
+}
+input[type=radio] {
+	vertical-align: middle;
+}
+input[type=submit], input[type=button], button {
+	height: 35px;
+	padding-right: 0px;
+	width: 100%;
+}
+
+input:disabled {
+	background-color: none;
+	opacity: 0.3;
+}
+input:invalid, textarea:invalid {
+	border: 1px solid red;
+	/* the box-shadow property creates the red border! need to overwrite it! */
+	box-shadow: none;
+}
+
+/* styling for focused elements */
+input:focus, textarea:focus {
+	border: 1px solid blue;
+	box-shadow: none;
+}
+
+fieldset.radiogroup {
+	margin-top: 15px;
+	margin-left: 0px;
+	padding: 0px;
+	border: none;
+}
+
+fieldset.radiogroup * {
+	height: 100%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+/* we normally don't display the tabSelectionMenu */
+#tabSelectionMenu {
+	display: none;
+}
+
+/*#editviewControls {
+ width: 100%;
+ height: 100%;
+ }*/
+
+/* these are settings for smartphone sized screens - note that checking for portrait orientation might not cover the case where the keyboard is displayed!!!*/
+@media all and (orientation: portrait), all and (max-width: 1090px) {
+
+	#tabSelectionMenu {
+		display: block;
+	}
+	
+	/* 
+	 * for displaying the menu icon instead of the select element, we 
+	 * - set the same position and dimension on icon div and select element
+	 * - set a higher z-index for the select element
+	 * - and set the opacity of the select element to 0.0, i.e. we make it fully transparent
+	 * 
+	 * has been tested on
+	 * - firefox 36.0.1
+	 * - iPad with iOS 7.0.2
+	 * - Google/LG Nexus 5 with Android 5
+	 * 
+	 * it does not work reliably on Chrome 41.0 as here the select element will not be scaled vertically
+	 */	
+	.overlay #tabSelection {
+		display: inline-block;
+		width: 50px;
+		height: 40px;
+		margin: 0px;
+		position: absolute;
+		right: 10px;
+		top: 10px;
+		z-index: 4;
+		opacity: 0.0;
+	}
+
+	.overlay #tabSelectionMenuTrigger {
+		display: inline-block;
+		background: url("./img/menuicon_small.png") -4px -6px;
+		width: 50px;
+		height: 40px;
+		position: absolute;
+		right: 10px;
+		top: 10px;
+		z-index: 3;
+	}
+
+	/* 
+	 * this is for formatting the other components of the editview
+	 */
+
+	.overlay .tabsContainer section h2 {
+		display: none
+	}
+
+	.overlay article.tabsContainer section {
+		box-shadow: none;
+	}
+
+	.overlay article.tabsContainer {
+		height: 90%;
+		width: 90%;
+		margin-left: 10px;
+		margin-right: 10px;
+		margin-bottom: 10px;
+		margin-top: 70px;
+		width: calc(100% - 20px);
+		height: calc(100% - 75px);
+	}
+
+	.overlay article.tabsContainer .tab {
+		margin: 0px;
+		width: calc(100% - 40px)
+	}
+
+}
