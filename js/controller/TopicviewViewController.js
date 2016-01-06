@@ -112,7 +112,7 @@ var iam = (function(iammodule) {
 					alert("found imgebox: " + imgboxid);
 					crudops.readImgbox(imgboxid,function(imgboxObj){
 						alert("read imgbox: " + JSON.stringify(imgboxObj));
-						showImgbox(imgboxObj);
+						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","read","imgbox",imgboxObj));
 					});
 				}
 				else {
@@ -141,7 +141,7 @@ var iam = (function(iammodule) {
 			 * event handler for imgbox
 			 */
 
-			eventDispatcher.addEventListener(eventhandling.customEvent("crud","created","imgbox"), function(event){
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","created|read","imgbox"), function(event){
 				//alert("got created event for imgbox: " + JSON.stringify(event));
 				imgboxObj = event.data;
 				showImgbox(imgboxObj);
@@ -183,8 +183,26 @@ var iam = (function(iammodule) {
 			imgel.id = "imgbox";
 			imgel.src = imgboxObj.src;
 
+			imgel.onclick = function(event){
+				event.stopPropagation();
+				var videoel = document.createElement("video");
+				videoel.src = "/content/mov/video.ogv";
+				videoel.controls = true;
+				videoel.autoplay = true;
+
+				document.getElementById("leftColumn").appendChild(videoel);
+				document.getElementById("mainview").classList.add("videoview");
+			}
 			document.getElementById("leftColumn").appendChild(imgel);
+
+			document.getElementById("navigationButton").onclick = function(event) {
+				event.stopPropagation();
+				document.getElementById("mainview").classList.remove("videoview");
+				document.getElementById("leftColumn").removeChild(document.getElementsByTagName("video")[0]);
+				return false;
+			}
 		}
+
 
 		function removeImgbox(){
 			var imgboxel = document.getElementById("imgbox");

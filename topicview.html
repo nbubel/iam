@@ -81,6 +81,7 @@
 			<div id="tabSelectionMenu">
 				<select id="tabSelection">
 					<option value="title">title</option>
+					<option value="title">imgbox</option>
 				</select>
 				<div id="tabSelectionMenuTrigger">
 
@@ -96,6 +97,20 @@
 							<input type="submit" value="Erzeugen" name="submit"/>
 						</form>
 						<button id="deleteTitleButton">
+							Löschen
+						</button>
+					</div>
+				</section>
+				<section id="imgboxTab" class="tab">
+					<h2><a href="#imgboxTab">Imgbox</a></h2>
+					<div class="scrollview">
+						<form name="imgboxForm">
+							<input type="text" name="title"/>
+							<input type="url" name="src"/>
+							<input type="_id" name="_id" disabled="disabled"/>
+							<input type="submit" name="imgboxFormSubmit" value="Erstellen"/>
+						</form>
+						<button id="imgboxFormDelete">
 							Löschen
 						</button>
 					</div>
@@ -156,17 +171,6 @@
 						<!-- the submit action -->
 						<input type="submit" value="Erzeugen"/>
 					</form>
-				</div>
-			</section>
-			<section id="imgboxTab" class="tab">
-				<h2><a href="#imgboxTab">Imgbox</a></h2>
-				<div class="scrollview">
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-					</p>
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-					</p>
 				</div>
 			</section>
 			<section id="imgboxlistTab" class="tab scrollview">

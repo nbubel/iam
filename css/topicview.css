@@ -54,3 +54,15 @@ iframe {
   user-select: none; 
 }
 
+#mainview.videoview {
+	background-color: black;
+	transition: background-color 3s;
+}
+
+.videoview .renderContainer *{
+	display: none;
+}
+
+.videoview .renderContainer video {
+	display: inline-block;
+}

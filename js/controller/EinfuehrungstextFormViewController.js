@@ -28,8 +28,8 @@ var iam = (function(iammodule) {
 		function initialiseView() {
 
 			// initialise the ui elements
-			inputSrc = document.querySelector("input[name='src']");
-			inputTxt = document.querySelector("textarea[name='txt']");
+			inputSrc = document.forms["einfuehrungstextForm"].querySelector("input[name='src']");
+			inputTxt = document.forms["einfuehrungstextForm"].querySelector("textarea[name='txt']");
 			inputContentModeFirst = document.querySelector("input[name='contentMode']");
 			outputValidationMessages = document.getElementsByClassName("validationMessages")[0];
 

@@ -16,13 +16,21 @@ var iam = (function(iammodule) {
 		var topicid = _topicid;
 		var crudops = _crudops;
 		var eventDispatcher = _eventDispatcher;
+
+		var imgboxForm = document.forms["imgboxForm"];
 		
 		function initialiseView() {
 			console.log("initialiseImgboxForm()");
 			//alert("initialiseImgboxForm()");
 
-			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created","imgbox"),function(event){
-				console.log("ImgboxFormViewController: got created event for imgbox:" + JSON.stringify(event.data));
+			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created|read","imgbox"),function(event){
+				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
+				updateImgboxForm(event.data);
+			});
+
+			imgboxForm.addEventListener("submit", function(event) {
+				event.preventDefault();
+				submitImgboxForm();
 			});
 	
 		}
@@ -30,8 +38,16 @@ var iam = (function(iammodule) {
 		/*
 		 * this function can be called from an event listener when a crud operation has been performed on some object element
 		 */
-		function updateImgboxForm(imgboxElement) {
-			console.log("updateImgboxForm()");	
+		function updateImgboxForm(imgboxObj) {
+			console.log("updateImgboxForm()");
+
+			if (imgboxObj){
+			imgboxForm.title.value = imgboxObj.title;
+			imgboxForm.src.value = imgboxObj.src;
+			imgboxForm._id.value = imgboxObj._id;
+
+			imgboxForm.imgboxFormSubmit.disabled = true;
+			}
 		}
 
 
@@ -40,6 +56,15 @@ var iam = (function(iammodule) {
 		 */
 		function submitImgboxForm() {
 			console.log("submitImgboxForm()");
+
+			var imgboxObj = {title: imgboxForm.title.value, src: imgboxForm.src.value, description: "lorem ipsum dolor sit amet"};
+			alert("submit: " + JSON.stringify(imgboxObj));
+
+			crudops.createImgbox(imgboxObj, function(created){
+				alert("created: " + JSON.stringify(created));
+				eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
+			});
+
 
 		}
 		

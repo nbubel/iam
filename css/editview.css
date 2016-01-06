@@ -89,7 +89,6 @@ fieldset.radiogroup {
 }
 
 fieldset.radiogroup * {
-	height: 100%;
 	margin-top: 0px;
 	margin-bottom: 0px;
 	padding-top: 0px;
