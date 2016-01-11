@@ -147,8 +147,16 @@ var iam = (function(iammodule) {
 				showImgbox(imgboxObj);
 			});
 
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","updated","imgbox"), function(event){
+				removeImgbox();
+				imgboxObj = event.data;
+				alert("imgbox data: "+ JSON.stringify(event.data));
+				showImgbox(imgboxObj);
+			});
+
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","deleted","imgbox"), function(event){
 				removeImgbox();
+				imgboxObj = null;
 			});
 
 			// initialise the crud operations and try to read out a topicview object
@@ -179,9 +187,21 @@ var iam = (function(iammodule) {
 		}
 
 		function showImgbox(imgboxObj){
+
+			var section = document.createElement("section");
+			section.id = "imgbox";
+
+			var ahead = document.createElement("a");
+			ahead.setAttribute("onclick", "alert('" + imgboxObj.description + "')");
+			ahead.href = "#";
+			var title = document.createElement("h2");
+			title.innerHTML = "" + imgboxObj.title;
+			ahead.appendChild(title);
+
+
 			var imgel = document.createElement("img");
-			imgel.id = "imgbox";
 			imgel.src = imgboxObj.src;
+
 
 			imgel.onclick = function(event){
 				event.stopPropagation();
@@ -193,7 +213,9 @@ var iam = (function(iammodule) {
 				document.getElementById("leftColumn").appendChild(videoel);
 				document.getElementById("mainview").classList.add("videoview");
 			}
-			document.getElementById("leftColumn").appendChild(imgel);
+			document.getElementById("leftColumn").appendChild(section);
+			document.getElementById("imgbox").appendChild(ahead);
+			document.getElementById("imgbox").appendChild(imgel);
 
 			document.getElementById("navigationButton").onclick = function(event) {
 				event.stopPropagation();
@@ -266,30 +288,60 @@ var iam = (function(iammodule) {
 		this.createImgbox = function() {
 			console.log("createImgbox()");
 
-			var imgbox = {title: "lorem ipsum", description: "solor sit amet", src: "http://lorempixel.com/300/200"};
+			if (imgboxObj != null) {
+				alert("createImgbox action is blocked! imgbox already exists for " + topicid);
+			}
+			else {
+				var imgbox = {title: "lorem ipsum", description: "solor sit amet", src: "http://lorempixel.com/300/200"};
 
-			crudops.createImgbox(imgbox, function (created){
-				console.log("TopicviewViewController: imgbox created: " + JSON.stringify(created));
-				eventDispatcher.notifyListeners(eventhandling.customEvent("crud","created","imgbox",created));
-			});
-
+				crudops.createImgbox(imgbox, function (created){
+					console.log("TopicviewViewController: imgbox created: " + JSON.stringify(created));
+					eventDispatcher.notifyListeners(eventhandling.customEvent("crud","created","imgbox",created));
+				});
+			}
 		}
 
 		this.updateImgbox = function() {
 			console.log("updateImgbox()");
 
+			if(imgboxObj == null){
+				alert("updateImgbox action is blocked! No image was found in topic: " + topicviewObj.title);
+			}
+			else {
+				if (imgboxObj.title == "updated"){
+					var newimgbox = {title: topicviewObj.title, description: topicviewObj.title + " description", src: "http://lorempixel.com/300/200"};
+				}
+				else {
+					var newimgbox = {title: "updated", description: "updated image description", src: "http://lorempixel.com/300/300"};
+				}
+
+				alert("update images with: imgboxObj.id=" + imgboxObj._id + " newimgbox=" + JSON.stringify(newimgbox) + "!");
+
+				crudops.updateImgbox(imgboxObj._id, newimgbox, function (updated){
+					console.log("TopicviewViewController: imgbox updated: " + JSON.stringify(updated));
+					eventDispatcher.notifyListeners(eventhandling.customEvent("crud","updated","imgbox",updated));
+				});
+			}
 		}
 
 		this.deleteImgbox = function() {
 			console.log("deleteImgbox()");
 
-			console.log("delete imgbox: " + JSON.stringify(imgboxObj));
+			if (imgboxObj==null){
+				alert("There is not imgbox in this topicview to delete!");
+			}
+			else {
+				console.log("delete imgbox: " + JSON.stringify(imgboxObj));
 
-			crudops.deleteImgbox(imgboxObj._id, function(deleted){
-				console.log("got result for deleted imgbox: " + deleted);
-				eventDispatcher.notifyListeners(eventhandling.customEvent("crud","deleted","imgbox",imgboxObj._id));
-			});
+				crudops.deleteImgbox(imgboxObj._id, function(deleted){
+					console.log("got result for deleted imgbox: " + deleted);
+					eventDispatcher.notifyListeners(eventhandling.customEvent("crud","deleted","imgbox",imgboxObj._id));
+				});
 
+				crudops.deleteImgboxRef(topicid, function(deleted){
+					alert("got result for deleted imgboxRef: " + deleted);
+				});
+			}
 		}
 		/*
 		 * NJM etc.: this is a helper function that checks whether the contentItems array of topicviewObj contains a reference to an imgbox. If a reference is found, the imgboxid is returned.

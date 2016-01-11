@@ -54,6 +54,8 @@ iframe {
   user-select: none; 
 }
 
+/* Video */
+
 #mainview.videoview {
 	background-color: black;
 	transition: background-color 3s;
@@ -65,4 +67,67 @@ iframe {
 
 .videoview .renderContainer video {
 	display: inline-block;
+}
+
+/* Links */
+
+a {
+	text-decoration: none;
+}
+
+
+/*
+ * margins for section elements
+ */
+section {
+	margin-top: 15px;
+	margin-left: 20px;
+	display: block;
+	vertical-align: top;
+}
+
+
+/*
+ * imgbox
+ */
+
+
+#imgbox {
+	background-color: rgb(242,242,242);
+	font-family: "Avenir", sans-serif;
+	font-size: 11pt;
+	float: left;
+}
+
+#imgbox h2 {
+	font-family: "Avenir Medium", sans-serif;
+	font-weight: normal;
+	font-size: 15pt;
+	color: rgb(63,169,245);
+	text-transform: uppercase;
+	margin: 0px;
+	background-image: url("./img/Kringel01.png");
+	background-repeat: no-repeat;
+	background-position: right bottom;
+	background-origin: padding-box;
+	background-size: 40px 40px;
+	padding-top: 10px;
+	padding-bottom: 20px;
+	padding-left: 10px;
+	display: block;
+	margin-right: 15px;
+}
+
+#imgbox  img {
+	width: auto;
+	height: auto;
+	max-width: 230px;
+	max-height: 198px;
+	padding: 15px;
+	margin: 5px;
+	margin-top: -15px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-top: 20px;
+	border-top: 1px dashed rgb(128,128,128);
 }

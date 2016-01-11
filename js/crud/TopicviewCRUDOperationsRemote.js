@@ -147,20 +147,47 @@ var iam =
 
 		this.updateImgbox = function(objid, updateObj, callback) {
 
+			console.log("updateImgbox()" + objid);
+
+			// for updating, we identify the topicview passing the id and then only pass the attributes to be updated
+			xhr.update("/imgboxs/"+objid, updateObj, function(updated) {
+				// if the update was successful, we pass the update object to the callback
+				if (updated > 0) {
+					if (callback) {
+						xhr.read("/imgboxs/" + objid, null, callback);
+					}
+				} else {
+					alert("The imgbox element could not be updated!");
+				}
+			});
 		}
 
+
 		this.deleteImgbox = function(objid, callback) {
-			xhr.deleat("/imgboxs/"+objid,null, function(deleted){
+			xhr.deleat("/imgboxs/"+objid, null, function(deleted){
 				alert("imgbox deleted: "+ deleted);
 				if (deleted > 0){
 					callback(true);
 				}
 				else {
-					alert("imgbod could not be deleted");
+					alert("imgbox could not be deleted");
 				}
 			});
 
 		}
+
+		this.deleteImgboxRef = function(topicid, callback){
+			xhr.deleat("/topicviews/" + topicid + "/contentItems/imgbox", null, function (deleted){
+				if (deleted > 0) {
+					callback(true);
+				}
+				else {
+					alert("topicviewCRUDOperationsRemote: delete of contentItems could not be completed!");
+				}
+			});
+		}
+
+
 		/*
 		 * this function is needed for creating the objectlist view
 		 */

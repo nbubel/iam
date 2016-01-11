@@ -23,7 +23,7 @@ var iam = (function(iammodule) {
 			console.log("initialiseImgboxForm()");
 			//alert("initialiseImgboxForm()");
 
-			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created|read","imgbox"),function(event){
+			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created|read|updated","imgbox"),function(event){
 				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
 				updateImgboxForm(event.data);
 			});
@@ -32,6 +32,27 @@ var iam = (function(iammodule) {
 				event.preventDefault();
 				submitImgboxForm();
 			});
+
+			/*
+			 * function für Radiobuttonselection
+			 */
+
+			function radioButtonSelected(event) {
+				//alert("event.target: " + event.target + "with id: " + event.target.id);
+				if (event.target.id == "inputModeUrl"){
+					imgboxForm.src.disabled = false;
+					imgboxForm.upload.disabled = true;
+				}
+				else {
+					imgboxForm.src.disabled = true;
+					imgboxForm.upload.disabled = false;
+				}
+			}
+
+			var radioButtons = imgboxForm.querySelectorAll("input[name='inputMode']");
+			for (var i=0;i<radioButtons.length;i++) {
+				radioButtons[i].onclick = radioButtonSelected;
+			}
 	
 		}
 		
@@ -43,6 +64,7 @@ var iam = (function(iammodule) {
 
 			if (imgboxObj){
 			imgboxForm.title.value = imgboxObj.title;
+			imgboxForm.description.value = imgboxObj.description;
 			imgboxForm.src.value = imgboxObj.src;
 			imgboxForm._id.value = imgboxObj._id;
 
@@ -57,15 +79,48 @@ var iam = (function(iammodule) {
 		function submitImgboxForm() {
 			console.log("submitImgboxForm()");
 
-			var imgboxObj = {title: imgboxForm.title.value, src: imgboxForm.src.value, description: "lorem ipsum dolor sit amet"};
-			alert("submit: " + JSON.stringify(imgboxObj));
+			var selectedOption = imgboxForm.querySelector("input[name='inputMode']:checked");
+			if (selectedOption.id == "inputModeUrl"){
 
-			crudops.createImgbox(imgboxObj, function(created){
-				alert("created: " + JSON.stringify(created));
-				eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
-			});
+				var imgboxObj = {title: imgboxForm.title.value, src: imgboxForm.src.value, description: imgboxForm.description.value};
+				//alert("submit: " + JSON.stringify(imgboxObj));
 
+				crudops.createImgbox(imgboxObj, function(created){
+					alert("created: " + JSON.stringify(created));
+					eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
+				});
+			}
+			else if ("inputModeUrl"){
+				submitImgboxFormWithUpload();
+			}
+		}
 
+		function submitImgboxFormWithUpload() {
+			alert("submitImgboxFormWithUpload()!")
+
+			var formData = new FormData();
+			formData.append("title",imgboxForm.title.value);
+			formData.append("description", imgboxForm.description.value);
+			formData.append("src", imgboxForm.upload.files[0]);
+
+			alert("created formdata: " + formData);
+
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4 && xhr.status == 200){
+					//alert("got response " + xhr.responseText);
+					crudops.createImgbox(JSON.parse(xhr.responseText).data,function(created){
+						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
+					});
+
+				}
+				else if (xhr.readyState == 4 && xhr.status == 500){
+					alert("got error, check server Log!");
+				}
+			}
+
+			xhr.open("POST","/http2mdb/imgboxs");
+			xhr.send(formData);
 		}
 		
 		// at the end of construction, call the initialiseView function
