@@ -28,6 +28,7 @@ var iam = (function(iammodule) {
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","deleted","imgbox"), function (event){
 				alert("imgbox deleted: " + JSON.stringify(event));
+				alert("DOM: remove id:" + JSON.stringify(event.data));
 				removeImgbox(event.data);
 			});
 

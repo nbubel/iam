@@ -167,7 +167,7 @@ var iam =
 			xhr.deleat("/imgboxs/"+objid, null, function(deleted){
 				alert("imgbox deleted: "+ deleted);
 				if (deleted > 0){
-					callback(true);
+					callback(objid);
 				}
 				else {
 					alert("imgbox could not be deleted");

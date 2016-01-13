@@ -101,28 +101,6 @@
 						</button>
 					</div>
 				</section>
-				<section id="imgboxTab" class="tab">
-					<h2><a href="#imgboxTab">Imgbox</a></h2>
-					<div class="scrollview">
-						<form name="imgboxForm">
-							<fieldset class="radiogroup">
-							<input type="radio" name="inputMode" url="inputModeUrl" id="inputModeUrl" checked="checked"/>
-							<label for="inputModeUrl">URL</label>
-							<input type="radio" name="inputMode" url="inputModeUpload" id="inputModeUpload"/>
-							<label for="inputModeUpload">Upload</label>
-							</fieldset>
-							<input type="text" name="title"/>
-							<input type="text" name="description"/>
-							<input type="url" name="src"/>
-							<input type="file" name="upload" accept="image/x" disabled="disabled"/>
-							<input type="_id" name="_id" disabled="disabled"/>
-							<input type="submit" name="imgboxFormSubmit" value="Erstellen"/>
-						</form>
-						<button id="imgboxFormDelete">
-							Löschen
-						</button>
-					</div>
-				</section>
 			</article>
 			<!--</div>-->
 		</div>
@@ -179,6 +157,28 @@
 						<!-- the submit action -->
 						<input type="submit" value="Erzeugen"/>
 					</form>
+				</div>
+			</section>
+			<section id="imgboxTab" class="tab">
+				<h2><a href="#imgboxTab">Imgbox</a></h2>
+				<div class="scrollview">
+					<form name="imgboxForm">
+						<fieldset class="radiogroup">
+							<input type="radio" name="inputMode" url="inputModeUrl" id="inputModeUrl" checked="checked"/>
+							<label for="inputModeUrl">URL</label>
+							<input type="radio" name="inputMode" url="inputModeUpload" id="inputModeUpload"/>
+							<label for="inputModeUpload">Upload</label>
+						</fieldset>
+						<input type="text" name="title"/>
+						<input type="text" name="description"/>
+						<input type="url" name="src"/>
+						<input type="file" name="upload" accept="image/x" disabled="disabled"/>
+						<input type="_id" name="_id" disabled="disabled"/>
+						<input type="submit" name="imgboxFormSubmit" value="Erzeugen/Modifizieren"/>
+					</form>
+					<button id="imgboxFormDelete" disabled>
+						Löschen
+					</button>
 				</div>
 			</section>
 			<section id="imgboxlistTab" class="tab scrollview">

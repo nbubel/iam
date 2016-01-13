@@ -18,19 +18,40 @@ var iam = (function(iammodule) {
 		var eventDispatcher = _eventDispatcher;
 
 		var imgboxForm = document.forms["imgboxForm"];
+		var imgboxObject = null;
 		
 		function initialiseView() {
 			console.log("initialiseImgboxForm()");
 			//alert("initialiseImgboxForm()");
 
+			// instantiate the editview
+			// var editviewVC = iam.controller.editview.newInstance(topicid, eventDispatcher, crudops);
+
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created|read|updated","imgbox"),function(event){
 				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
 				updateImgboxForm(event.data);
+				imgboxObject = event.data;
+				changeDeleteButton();
+			});
+
+			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","deleted","imgbox"),function(event){
+				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
+				imgboxForm.title.value = "";
+				imgboxForm.description.value = "";
+				imgboxForm.src.value = "";
+				imgboxForm._id.value = "";
+				imgboxObject = null;
+				changeDeleteButton();
 			});
 
 			imgboxForm.addEventListener("submit", function(event) {
 				event.preventDefault();
 				submitImgboxForm();
+			});
+
+			document.getElementById("imgboxFormDelete").addEventListener("click", function(event) {
+				event.preventDefault();
+				deleteImgbox(imgboxObject);
 			});
 
 			/*
@@ -68,7 +89,37 @@ var iam = (function(iammodule) {
 			imgboxForm.src.value = imgboxObj.src;
 			imgboxForm._id.value = imgboxObj._id;
 
-			imgboxForm.imgboxFormSubmit.disabled = true;
+			imgboxForm.imgboxFormSubmit.disabled = false;
+			}
+		}
+
+
+		function deleteImgbox(imgboxObj) {
+			console.log("updateImgboxForm()");
+
+			if (imgboxObj==null){
+				alert("There is not imgbox in this topicview to delete!");
+			}
+			else {
+				console.log("delete imgbox: " + JSON.stringify(imgboxObj));
+
+				crudops.deleteImgbox(imgboxObj._id, function(deleted){
+					console.log("got result for deleted imgbox: " + deleted);
+					eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","deleted","imgbox",imgboxObj._id));
+				});
+
+				crudops.deleteImgboxRef(topicid, function(deleted){
+					alert("got result for deleted imgboxRef: " + deleted);
+				});
+			}
+		}
+
+		function changeDeleteButton(){
+			if(imgboxObject != null){
+				document.getElementById("imgboxFormDelete").disabled = false;
+			}
+			else {
+				document.getElementById("imgboxFormDelete").disabled = true;
 			}
 		}
 
@@ -81,14 +132,20 @@ var iam = (function(iammodule) {
 
 			var selectedOption = imgboxForm.querySelector("input[name='inputMode']:checked");
 			if (selectedOption.id == "inputModeUrl"){
-
 				var imgboxObj = {title: imgboxForm.title.value, src: imgboxForm.src.value, description: imgboxForm.description.value};
-				//alert("submit: " + JSON.stringify(imgboxObj));
+				alert("submit: " + JSON.stringify(imgboxObj));
 
-				crudops.createImgbox(imgboxObj, function(created){
-					alert("created: " + JSON.stringify(created));
-					eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
-				});
+				if (imgboxObject == null){
+					crudops.createImgbox(imgboxObj, function(created){
+						alert("created: " + JSON.stringify(created));
+						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
+					});
+				} else {
+					crudops.updateImgbox(imgboxObject._id, imgboxObj, function (updated){
+						console.log("TopicviewViewController: imgbox updated: " + JSON.stringify(updated));
+						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","updated","imgbox",updated));
+					});
+				}
 			}
 			else if ("inputModeUrl"){
 				submitImgboxFormWithUpload();
@@ -109,10 +166,17 @@ var iam = (function(iammodule) {
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && xhr.status == 200){
 					//alert("got response " + xhr.responseText);
-					crudops.createImgbox(JSON.parse(xhr.responseText).data,function(created){
-						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
-					});
-
+					if(imgboxObject == null) {
+						crudops.createImgbox(JSON.parse(xhr.responseText).data, function (created) {
+							eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud", "created", "imgbox", created));
+						});
+					}
+					else{
+						crudops.updateImgbox(imgboxObject._id, JSON.parse(xhr.responseText).data, function (updated){
+							console.log("imgbox updated: " + JSON.stringify(updated));
+							eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","updated","imgbox",updated));
+						});
+					}
 				}
 				else if (xhr.readyState == 4 && xhr.status == 500){
 					alert("got error, check server Log!");

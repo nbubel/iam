@@ -60,45 +60,110 @@ var iam = (function(iammodule) {
 		 * the crud operations for topicview
 		 */
 		this.createTopicview = function(topicviewObj, callback) {
-
+			localStorage.setItem("topicview_" + topicviewObj.topicid,JSON.stringify(topicviewObj));
+			callback(topicviewObj);
 		}
 
 		this.readTopicview = function(topicid, callback) {
-
+			var topicviewStr = localStorage.getItem("topicview_" + topicid);
+			var topicviewObj = JSON.parse(topicviewStr);
+			callback(topicviewObj);
 		}
 
 		this.deleteTopicview = function(topicid, callback) {
-
+			localStorage.removeItem("topicview_"+topicid);
+			callback(true);
 		}
 
 		this.updateTopicview = function(topicid, updateObj, callback) {
+			var topicviewStr = localStorage.getItem("topicview_" + topicid);
+			var topicviewObj = JSON.parse(topicviewStr);
+			alert("add: " + JSON.stringify(updateObj));
+			topicviewObj.title = updateObj.title;
+			alert("after add new title: " + JSON.stringify(topicviewObj));
+			localStorage.setItem("topicview_" + topicid, JSON.stringify(topicviewObj));
 
+			callback(updateObj);
 		}
 
 		/*
 		 * the crud operations for imgbox
 		 */
 		this.createImgbox = function(obj, callback) {
-			if (manualids && !obj._id) {
+			if (true/*manualids && !obj._id*/) {
 				obj._id = nextId();
 			}
+			localStorage.setItem("imgbox_" + obj._id, JSON.stringify(obj));
+			var topicviewObj = JSON.parse(localStorage.getItem("topicview_" + topicid));
+			topicviewObj.contentItems.push({type: "imgbox", renderContainer: "right", _id: obj._id});
+			localStorage.setItem("topicview_" + topicid, JSON.stringify(topicviewObj));
 
+			//this.createImgboxReference({type: "imgbox", renderContainer: "right", imgboxid: obj._id}, function(){
+			callback(obj);
+			// });
 		}
-		
+
+		// obj: imgbox-reference
+		// callback: function when reference creation is done
 		this.createImgboxReference = function(obj, callback) {
-			
+			//this.readTopicview(topicid, function(topicviewObj){
+			//	topicviewObj.contentItems.push(obj);
+			//	localStorage.setItem("topicview_"+ topicid,JSON.stringify(topicviewObj));
+			//	callback(obj);
+			//});
 		}
 
 		this.readImgbox = function(objid, callback) {
-
+			alert("readImgbox: " + objid);
+			var imgboxObj = JSON.parse(localStorage.getItem("imgbox_" + objid));
+			callback(imgboxObj);
 		}
 
 		this.updateImgbox = function(objid, updateObj, callback) {
+			var imgboxObj = JSON.parse(JSON.stringify(updateObj));
+			var imgboxID = JSON.parse(JSON.stringify(objid));
+
+			alert("want to update imgbox: " + JSON.stringify(imgboxObj));
+			alert("imgboxID: " +imgboxID);
+
+			imgboxObj._id = imgboxID;
+
+			//process(imgboxObj,imgboxID);
+
+			alert("want to update imgbox: " + JSON.stringify(imgboxObj));
+			alert("imgboxID: " +imgboxID);
+			localStorage.setItem("imgbox_" + imgboxID, JSON.stringify(imgboxObj));
+
+			var imgboxUpdateObj = JSON.parse(localStorage.getItem("imgbox_" + imgboxID));
+
+			callback(imgboxObj);
+
+
+			//localStorage.setItem("imgbox_" + obj._id, JSON.stringify(obj));
+			//var topicviewObj = JSON.parse(localStorage.getItem("topicview_" + topicid));
+			//topicviewObj.contentItems.push({type: "imgbox", renderContainer: "right", imgboxid: obj._id});
+			//localStorage.setItem("topicview_" + topicid, JSON.stringify(topicviewObj));
 
 		}
 
 		this.deleteImgbox = function(objid, callback) {
+			var imgboxID = JSON.parse(JSON.stringify(objid));
+			var imgboxKey = "imgbox_" + imgboxID;
+			alert("want delete: " + imgboxKey);
+			localStorage.removeItem(imgboxKey);
+			callback(objid);
+		}
 
+		this.deleteImgboxRef = function(topicid, callback) {
+			var topicviewObj = JSON.parse(localStorage.getItem("topicview_" + topicid));
+			alert("want to remove imgbox Referenz: " + JSON.stringify(topicviewObj));
+			//topicviewObj = format(JSON.stringify(topicviewObj), 'type');
+			//topicviewObj = format(JSON.stringify(topicviewObj), 'renderContainer');
+			//topicviewObj = format(JSON.stringify(topicviewObj), 'imgboxid');
+			topicviewObj = (resetContentitems(JSON.stringify(topicviewObj), 'contentItems'));
+			alert("removed imgbox Referenz: " + JSON.stringify(topicviewObj));
+			localStorage.setItem("topicview_" + topicid,JSON.stringify(topicviewObj));
+			callback(true);
 		}
 
 		/*
@@ -112,6 +177,37 @@ var iam = (function(iammodule) {
 		 */
 		function nextId() {
 			return new Date().getTime().toString();
+		}
+
+		function format(json_string, key_to_skip) {
+
+			return JSON.parse(json_string, function (key, value) {
+				if (key !== key_to_skip) {
+					return value;
+				}
+			});
+		}
+
+		function resetContentitems(json_string, key_to_reset) {
+
+			return JSON.parse(json_string, function (key, value) {
+				if (key !== key_to_reset) {
+					return value;
+				}
+				if (key == key_to_reset) {
+					return [];
+				}
+			});
+		}
+
+		function process(val,imgboxID) {
+			val._id = JSON.parse(JSON.stringify(imgboxID));
+			alert("imgebox: " + JSON.parse(JSON.stringify(val)));
+			alert("set id to " + JSON.parse(JSON.stringify(imgboxID)));
+
+			for(var i = 0, len = val.items.length; i < len; i++) {
+				process(val.items[i],imgboxID);
+			}
 		}
 
 	}

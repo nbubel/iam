@@ -150,7 +150,7 @@ var iam = (function(iammodule) {
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","updated","imgbox"), function(event){
 				removeImgbox();
 				imgboxObj = event.data;
-				alert("imgbox data: "+ JSON.stringify(event.data));
+				alert("AFTER UPDATE: imgbox data: "+ JSON.stringify(event.data));
 				showImgbox(imgboxObj);
 			});
 
@@ -309,10 +309,10 @@ var iam = (function(iammodule) {
 			}
 			else {
 				if (imgboxObj.title == "updated"){
-					var newimgbox = {title: topicviewObj.title, description: topicviewObj.title + " description", src: "http://lorempixel.com/300/200"};
+					var newimgbox = { title: topicviewObj.title, description: topicviewObj.title + " description", src: "http://lorempixel.com/300/200"};
 				}
 				else {
-					var newimgbox = {title: "updated", description: "updated image description", src: "http://lorempixel.com/300/300"};
+					var newimgbox = { title: "updated", description: "updated image description", src: "http://lorempixel.com/300/300"};
 				}
 
 				alert("update images with: imgboxObj.id=" + imgboxObj._id + " newimgbox=" + JSON.stringify(newimgbox) + "!");

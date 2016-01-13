@@ -88,6 +88,21 @@ var iam = (function(iammodule) {
 			iam.controller.imgboxlist.newInstance(topicid, eventDispatcher, crudops);
 			iam.controller.imgboxform.newInstance(topicid, eventDispatcher, crudops);
 
+			/*
+			 * event handler for imgbox
+			 */
+
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","created|read","imgbox"), function(event){
+				alert("create imgbox-Tab");
+				showAddElementForm("imgbox");
+			});
+
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","deleted","imgbox"), function(event){
+				alert("hide imgbox-Tab");
+				hideTabForElementtype("imgbox");
+				hideTabForElementtype("imgboxlist");
+			});
+
 		}
 
 		/***************************************************************************************
