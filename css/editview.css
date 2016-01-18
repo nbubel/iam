@@ -105,6 +105,22 @@ fieldset.radiogroup * {
  height: 100%;
  }*/
 
+/* ImgboxList*/
+
+.tab .scrollview {
+	overflow-y: auto;
+}
+
+#imgboxListTable {
+	border: none;
+	width: 100%;
+}
+
+#imgboxListTable img {
+	max-width: 200px;
+	max-height: 100px;
+}
+
 /* these are settings for smartphone sized screens - note that checking for portrait orientation might not cover the case where the keyboard is displayed!!!*/
 @media all and (orientation: portrait), all and (max-width: 1090px) {
 

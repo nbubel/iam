@@ -127,7 +127,17 @@ var iam =
 			});
 		}
 
-		this.createImgboxReference = function(obj, callback) {
+		this.createImgboxReference = function(imgboxref, callback) {
+			alert("ImgboxReference: " + JSON.stringify(imgboxref));
+			xhr.update("/topicviews/" + topicid + "/contentItems", imgboxref, function (updated){
+				if (updated > 0) {
+					alert("Update:" + JSON.stringify(imgboxref));
+					callback(imgboxref);
+				}
+				else {
+					alert("topicviewCRUDOperationsRemote: set imgboxRef in topicview could not be completed!");
+				}
+			});
 
 		}
 		
@@ -191,8 +201,8 @@ var iam =
 		/*
 		 * this function is needed for creating the objectlist view
 		 */
-		this.readAllImgboxs = function(callback) {
-
+		this.readAllImgboxs = function(imgboxObjs) {
+			xhr.read("/imgboxs/", null, imgboxObjs);
 		}
 	}
 

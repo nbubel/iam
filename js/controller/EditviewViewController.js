@@ -92,17 +92,37 @@ var iam = (function(iammodule) {
 			 * event handler for imgbox
 			 */
 
-			eventDispatcher.addEventListener(eventhandling.customEvent("crud","created|read","imgbox"), function(event){
-				alert("create imgbox-Tab");
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","created","imgbox"), function(event){
+				alert("create imgbox-Tab by create Image");
+				showAddElementForm("imgbox");
+				initialiseAddElementForm("imgbox");
+				//selectTab("imgbox");
+			});
+
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","read","imgbox"), function(event){
+				alert("create imgbox-Tab by read Image");
 				showAddElementForm("imgbox");
 			});
+
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","deleted","imgbox"), function(event){
 				alert("hide imgbox-Tab");
 				hideTabForElementtype("imgbox");
-				hideTabForElementtype("imgboxlist");
+				selectTab("title");
+				if (document.getElementById("imgboxListTable").rows.length == 0) {
+					hideTabForElementtype("imgboxlist");
+				}
 			});
 
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","choose","imgboxlist"),function(event){
+				alert("Editview choose Imgboxlist!");
+				selectTab("imgboxlist");
+			});
+
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","choose","formview"),function(event){
+				alert("Editview choose Formview!");
+				selectTab("imgbox");
+			});
 		}
 
 		/***************************************************************************************

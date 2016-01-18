@@ -106,11 +106,11 @@ var iam = (function(iammodule) {
 		// obj: imgbox-reference
 		// callback: function when reference creation is done
 		this.createImgboxReference = function(obj, callback) {
-			//this.readTopicview(topicid, function(topicviewObj){
-			//	topicviewObj.contentItems.push(obj);
-			//	localStorage.setItem("topicview_"+ topicid,JSON.stringify(topicviewObj));
-			//	callback(obj);
-			//});
+			this.readTopicview(topicid, function(topicviewObj){
+				topicviewObj.contentItems.push(obj);
+				localStorage.setItem("topicview_"+ topicid,JSON.stringify(topicviewObj));
+				callback(obj);
+			});
 		}
 
 		this.readImgbox = function(objid, callback) {

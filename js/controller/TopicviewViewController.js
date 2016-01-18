@@ -159,6 +159,37 @@ var iam = (function(iammodule) {
 				imgboxObj = null;
 			});
 
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud","deleted","imgboxref"), function(event){
+				removeImgbox();
+				imgboxObj = null;
+			});
+
+			eventDispatcher.addEventListener(eventhandling.customEvent("crud", "read", "imgboxref"), function(event) {
+				alert("AFTER IMBOXREF-UPDATE: read topicview: " + JSON.stringify(event));
+
+				if(document.getElementById("imgbox")){
+				removeImgbox();
+				}
+
+				// try to find imgbox reference
+				var imgboxid = null;
+				imgboxid = event.data.imgboxid;
+				alert("found imgeboxid: " + JSON.stringify(event.data.imgboxid));
+
+
+				if (imgboxid){
+					alert("found imgebox: " + imgboxid);
+					crudops.readImgbox(imgboxid,function(imgboxObj){
+						alert("read imgbox: " + JSON.stringify(imgboxObj));
+						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","read","imgbox",imgboxObj));
+					});
+				}
+				else {
+					alert("no imgbox exists for topicview!");
+				}
+
+			});
+
 			// initialise the crud operations and try to read out a topicview object
 			crudops.initialise( function() {
 
@@ -327,9 +358,19 @@ var iam = (function(iammodule) {
 		this.deleteImgbox = function() {
 			console.log("deleteImgbox()");
 
+			var selectedOption = imgboxForm.querySelector("input[name='inputMode']:checked");
+
 			if (imgboxObj==null){
 				alert("There is not imgbox in this topicview to delete!");
 			}
+			else if (selectedOption.id == "inputModeListe"){
+				crudops.deleteImgboxRef(topicid, function(deleted){
+					alert("got result for deleted imgboxRef: " + deleted);
+					eventDispatcher.notifyListeners(eventhandling.customEvent("crud","deleted","imgboxref",imgboxObj._id));
+				});
+
+			}
+
 			else {
 				console.log("delete imgbox: " + JSON.stringify(imgboxObj));
 

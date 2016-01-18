@@ -168,13 +168,15 @@
 							<label for="inputModeUrl">URL</label>
 							<input type="radio" name="inputMode" url="inputModeUpload" id="inputModeUpload"/>
 							<label for="inputModeUpload">Upload</label>
+							<input type="radio" name="inputMode" url="inputModeListe" id="inputModeListe"/>
+							<label for="inputModeListe">Liste</label>
 						</fieldset>
-						<input type="text" name="title"/>
+						<input type="text" name="title" required="true"/>
 						<input type="text" name="description"/>
-						<input type="url" name="src"/>
+						<input type="url" name="src" required="true"/>
 						<input type="file" name="upload" accept="image/x" disabled="disabled"/>
 						<input type="_id" name="_id" disabled="disabled"/>
-						<input type="submit" name="imgboxFormSubmit" value="Erzeugen/Modifizieren"/>
+						<input type="submit" name="imgboxFormSubmit" value="Erzeugen"/>
 					</form>
 					<button id="imgboxFormDelete" disabled>
 						Löschen
@@ -184,6 +186,10 @@
 			<section id="imgboxlistTab" class="tab scrollview">
 				<h2><a href="#imgboxlistTab">Imgbox-Liste</a></h2>
 				<div class="scrollview">
+					<fieldset class="imgboxlistradiogroup">
+					<table id="imgboxListTable">
+
+					</table>
 				</div>
 			</section>
 		</div>

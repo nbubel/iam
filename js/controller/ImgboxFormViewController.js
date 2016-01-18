@@ -19,6 +19,9 @@ var iam = (function(iammodule) {
 
 		var imgboxForm = document.forms["imgboxForm"];
 		var imgboxObject = null;
+		var imgboxref = null;
+
+		var allimgboxs = null;
 		
 		function initialiseView() {
 			console.log("initialiseImgboxForm()");
@@ -27,26 +30,81 @@ var iam = (function(iammodule) {
 			// instantiate the editview
 			// var editviewVC = iam.controller.editview.newInstance(topicid, eventDispatcher, crudops);
 
+			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","readall","imgbox"), function (event){
+				allimgboxs = event;
+			});
+
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created|read|updated","imgbox"),function(event){
 				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
-				updateImgboxForm(event.data);
-				imgboxObject = event.data;
-				changeDeleteButton();
+				updateImgboxForm(event.data,false);
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","deleted","imgbox"),function(event){
 				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
-				imgboxForm.title.value = "";
-				imgboxForm.description.value = "";
-				imgboxForm.src.value = "";
-				imgboxForm._id.value = "";
-				imgboxObject = null;
-				changeDeleteButton();
+				updateImgboxForm(null,false);
+			});
+
+			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","deleted","imgboxref"),function(event){
+				alert("ImgboxFormViewController: updute form after imboxref was deleted");
+				updateImgboxForm(null,false);
+			});
+
+			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","choose","formview"), function (event){
+
+				alert("Get ImboxID for Imgboxreference!: " + event.data);
+				imgboxref = {type: "imgbox", renderContainer: "left", imgboxid: event.data};
+				alert("Imgboxreference: " + JSON.stringify(imgboxref));
+
+
+				// try to find imgbox reference
+				var imgboxid = null;
+				imgboxid = event.data;
+				alert("found imgeboxid for imgboxform: " + JSON.stringify(event.data));
+
+
+				if (imgboxid){
+					alert("found imgebox for imgboxform: " + imgboxid);
+					crudops.readImgbox(imgboxid,function(imgboxObj){
+						alert("read imgbox ofr imgboxform: " + JSON.stringify(imgboxObj));
+						updateImgboxForm(imgboxObj,true);
+					});
+				}
+				else {
+					alert("no imgbox exists for imgboxform!");
+				}
+
+
 			});
 
 			imgboxForm.addEventListener("submit", function(event) {
-				event.preventDefault();
-				submitImgboxForm();
+
+				if (document.getElementById("inputModeUrl").checked){
+					var urlTest = new RegExp("(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?");
+					if (urlTest.test(imgboxForm.src.value)) {
+						alert("URL-Test is matching RegEx");
+						event.preventDefault();
+						submitImgboxForm();
+					} else {
+						alert("URL-Test isn't matching RegEx! Please correct the SRC-URL with your input: " + imgboxForm.src.value);
+						event.preventDefault();
+						return false;
+					}
+				}
+				else if (document.getElementById("inputModeListe").checked) {
+					if (imgboxref != null){
+						event.preventDefault();
+						submitImgboxForm();
+					}
+					else {
+						alert("No Imagereference to update Topicview! Please select an imgbox at the imgboxlist-tab!");
+						event.preventDefault();
+						return false;
+					}
+				}
+				else {
+					event.preventDefault();
+					submitImgboxForm();
+				}
 			});
 
 			document.getElementById("imgboxFormDelete").addEventListener("click", function(event) {
@@ -63,10 +121,24 @@ var iam = (function(iammodule) {
 				if (event.target.id == "inputModeUrl"){
 					imgboxForm.src.disabled = false;
 					imgboxForm.upload.disabled = true;
+					imgboxForm.src.required = true;
+					imgboxForm.title.disabled = false;
+					imgboxForm.description.disabled = false;
+				}
+				else if (event.target.id == "inputModeUpload") {
+					imgboxForm.src.disabled = true;
+					imgboxForm.upload.disabled = false;
+					imgboxForm.upload.required = true;
+					imgboxForm.title.disabled = false;
+					imgboxForm.description.disabled = false;
 				}
 				else {
 					imgboxForm.src.disabled = true;
-					imgboxForm.upload.disabled = false;
+					imgboxForm.upload.disabled = true;
+					imgboxForm.title.disabled = true;
+					imgboxForm.description.disabled = true;
+
+					eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","choose","imgboxlist",allimgboxs.data));
 				}
 			}
 
@@ -80,16 +152,39 @@ var iam = (function(iammodule) {
 		/*
 		 * this function can be called from an event listener when a crud operation has been performed on some object element
 		 */
-		function updateImgboxForm(imgboxObj) {
+		function updateImgboxForm(imgboxObj, tocreate) {
 			console.log("updateImgboxForm()");
 
+			var selectedOption = imgboxForm.querySelector("input[name='inputMode']:checked");
+
 			if (imgboxObj){
+				imgboxObject = imgboxObj;
 			imgboxForm.title.value = imgboxObj.title;
 			imgboxForm.description.value = imgboxObj.description;
 			imgboxForm.src.value = imgboxObj.src;
 			imgboxForm._id.value = imgboxObj._id;
 
 			imgboxForm.imgboxFormSubmit.disabled = false;
+			imgboxForm.imgboxFormSubmit.value = "Aktualisieren";
+			document.getElementById("imgboxFormDelete").disabled = false;
+			if (selectedOption.id == "inputModeListe"){
+				imgboxForm.imgboxFormSubmit.disabled = true;
+					if (tocreate) {
+						imgboxForm.imgboxFormSubmit.value = "Erzeugen";
+						document.getElementById("imgboxFormDelete").disabled = true;
+						imgboxForm.imgboxFormSubmit.disabled = false;
+					}
+				}
+			}
+			else {
+				imgboxForm.title.value = "";
+				imgboxForm.description.value = "";
+				imgboxForm.src.value = "";
+				imgboxForm._id.value = "";
+				imgboxObject = null;
+				imgboxForm.imgboxFormSubmit.value = "Erzeugen";
+				document.getElementById("imgboxFormDelete").disabled = true;
+				imgboxForm.imgboxFormSubmit.disabled = false;
 			}
 		}
 
@@ -114,16 +209,6 @@ var iam = (function(iammodule) {
 			}
 		}
 
-		function changeDeleteButton(){
-			if(imgboxObject != null){
-				document.getElementById("imgboxFormDelete").disabled = false;
-			}
-			else {
-				document.getElementById("imgboxFormDelete").disabled = true;
-			}
-		}
-
-
 		/*
 		 * this method can be used for implementing submission of object form content to the server
 		 */
@@ -140,13 +225,27 @@ var iam = (function(iammodule) {
 						alert("created: " + JSON.stringify(created));
 						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
 					});
-				} else {
+				}
+				else {
 					crudops.updateImgbox(imgboxObject._id, imgboxObj, function (updated){
 						console.log("TopicviewViewController: imgbox updated: " + JSON.stringify(updated));
 						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","updated","imgbox",updated));
 					});
 				}
 			}
+
+			else if (selectedOption.id == "inputModeListe"){
+
+				/*if (!document.getElementById(imgboxref.imgboxid).checked){
+					alert("Please choose an imgbox to create in the tab imgboxlist!")
+					return false;
+				}*/
+				crudops.createImgboxReference(imgboxref, function (updated){
+					alert("ImgboxFormController: topicview got imgbox updated: " + JSON.stringify(updated));
+					eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","read","imgboxref",updated));
+				});
+			}
+
 			else if ("inputModeUrl"){
 				submitImgboxFormWithUpload();
 			}
