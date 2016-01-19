@@ -97,7 +97,7 @@ var iam = (function(iammodule) {
 			}.bind(this));
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud", "read", "topicview"), function(event) {
-				alert("read topicview: " + JSON.stringify(event.data));
+				console.log("read topicview: " + JSON.stringify(event.data));
 
 				// try to find imgbox reference
 				var imgboxid = null;
@@ -109,14 +109,14 @@ var iam = (function(iammodule) {
 				}
 
 				if (imgboxid){
-					alert("found imgebox: " + imgboxid);
+					console.log("found imgebox: " + imgboxid);
 					crudops.readImgbox(imgboxid,function(imgboxObj){
-						alert("read imgbox: " + JSON.stringify(imgboxObj));
+						console.log("read imgbox: " + JSON.stringify(imgboxObj));
 						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","read","imgbox",imgboxObj));
 					});
 				}
 				else {
-					alert("no imgbox exists for topicview!");
+					console.log("no imgbox exists for topicview!");
 				}
 
 			}.bind(this));
@@ -142,7 +142,7 @@ var iam = (function(iammodule) {
 			 */
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","created|read","imgbox"), function(event){
-				//alert("got created event for imgbox: " + JSON.stringify(event));
+				console.log("got created event for imgbox: " + JSON.stringify(event));
 				imgboxObj = event.data;
 				showImgbox(imgboxObj);
 			});
@@ -150,7 +150,7 @@ var iam = (function(iammodule) {
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","updated","imgbox"), function(event){
 				removeImgbox();
 				imgboxObj = event.data;
-				alert("AFTER UPDATE: imgbox data: "+ JSON.stringify(event.data));
+				console.log("after update: imgbox data: "+ JSON.stringify(event.data));
 				showImgbox(imgboxObj);
 			});
 
@@ -165,7 +165,7 @@ var iam = (function(iammodule) {
 			});
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud", "read", "imgboxref"), function(event) {
-				alert("AFTER IMBOXREF-UPDATE: read topicview: " + JSON.stringify(event));
+				console.log("after imgbox-ref-update: read topicview: " + JSON.stringify(event));
 
 				if(document.getElementById("imgbox")){
 				removeImgbox();
@@ -174,18 +174,18 @@ var iam = (function(iammodule) {
 				// try to find imgbox reference
 				var imgboxid = null;
 				imgboxid = event.data.imgboxid;
-				alert("found imgeboxid: " + JSON.stringify(event.data.imgboxid));
+				console.log("found imgeboxid: " + JSON.stringify(event.data.imgboxid));
 
 
 				if (imgboxid){
-					alert("found imgebox: " + imgboxid);
+					console.log("found imgebox: " + imgboxid);
 					crudops.readImgbox(imgboxid,function(imgboxObj){
-						alert("read imgbox: " + JSON.stringify(imgboxObj));
+						console.log("read imgbox: " + JSON.stringify(imgboxObj));
 						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","read","imgbox",imgboxObj));
 					});
 				}
 				else {
-					alert("no imgbox exists for topicview!");
+					console.log("no imgbox exists for topicview!");
 				}
 
 			});
@@ -223,7 +223,7 @@ var iam = (function(iammodule) {
 			section.id = "imgbox";
 
 			var ahead = document.createElement("a");
-			ahead.setAttribute("onclick", "alert('" + imgboxObj.description + "')");
+			ahead.setAttribute("onclick", "alert('Image-description: " + imgboxObj.description + "')");
 			ahead.href = "#";
 			var title = document.createElement("h2");
 			title.innerHTML = "" + imgboxObj.title;
@@ -346,7 +346,7 @@ var iam = (function(iammodule) {
 					var newimgbox = { title: "updated", description: "updated image description", src: "http://lorempixel.com/300/300"};
 				}
 
-				alert("update images with: imgboxObj.id=" + imgboxObj._id + " newimgbox=" + JSON.stringify(newimgbox) + "!");
+				console.log("update images with: imgboxObj.id=" + imgboxObj._id + " newimgbox=" + JSON.stringify(newimgbox) + "!");
 
 				crudops.updateImgbox(imgboxObj._id, newimgbox, function (updated){
 					console.log("TopicviewViewController: imgbox updated: " + JSON.stringify(updated));
@@ -361,11 +361,11 @@ var iam = (function(iammodule) {
 			var selectedOption = imgboxForm.querySelector("input[name='inputMode']:checked");
 
 			if (imgboxObj==null){
-				alert("There is not imgbox in this topicview to delete!");
+				alert("There is no imgbox in this topicview to delete!");
 			}
 			else if (selectedOption.id == "inputModeListe"){
 				crudops.deleteImgboxRef(topicid, function(deleted){
-					alert("got result for deleted imgboxRef: " + deleted);
+					console.log("got result for deleted imgboxRef: " + deleted);
 					eventDispatcher.notifyListeners(eventhandling.customEvent("crud","deleted","imgboxref",imgboxObj._id));
 				});
 
@@ -380,7 +380,7 @@ var iam = (function(iammodule) {
 				});
 
 				crudops.deleteImgboxRef(topicid, function(deleted){
-					alert("got result for deleted imgboxRef: " + deleted);
+					console.log("got result for deleted imgboxRef: " + deleted);
 				});
 			}
 		}

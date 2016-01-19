@@ -21,11 +21,10 @@ var iam = (function(iammodule) {
 		var imgboxObject = null;
 		var imgboxref = null;
 
-		var allimgboxs = null;
+		var allimgboxs = new Object();
 		
 		function initialiseView() {
 			console.log("initialiseImgboxForm()");
-			//alert("initialiseImgboxForm()");
 
 			// instantiate the editview
 			// var editviewVC = iam.controller.editview.newInstance(topicid, eventDispatcher, crudops);
@@ -35,37 +34,37 @@ var iam = (function(iammodule) {
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created|read|updated","imgbox"),function(event){
-				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
+				console.log("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
 				updateImgboxForm(event.data,false);
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","deleted","imgbox"),function(event){
-				alert("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
+				console.log("ImgboxFormViewController: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
 				updateImgboxForm(null,false);
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","deleted","imgboxref"),function(event){
-				alert("ImgboxFormViewController: updute form after imboxref was deleted");
+				console.log("ImgboxFormViewController: updte form after imboxref was deleted");
 				updateImgboxForm(null,false);
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","choose","formview"), function (event){
 
-				alert("Get ImboxID for Imgboxreference!: " + event.data);
+				console.log("Get ImboxID for Imgboxreference!: " + event.data);
 				imgboxref = {type: "imgbox", renderContainer: "left", imgboxid: event.data};
-				alert("Imgboxreference: " + JSON.stringify(imgboxref));
+				console.log("Imgboxreference: " + JSON.stringify(imgboxref));
 
 
 				// try to find imgbox reference
 				var imgboxid = null;
 				imgboxid = event.data;
-				alert("found imgeboxid for imgboxform: " + JSON.stringify(event.data));
+				console.log("found imgeboxid for imgboxform: " + JSON.stringify(event.data));
 
 
 				if (imgboxid){
-					alert("found imgebox for imgboxform: " + imgboxid);
+					console.log("found imgebox for imgboxform: " + imgboxid);
 					crudops.readImgbox(imgboxid,function(imgboxObj){
-						alert("read imgbox ofr imgboxform: " + JSON.stringify(imgboxObj));
+						console.log("read imgbox ofr imgboxform: " + JSON.stringify(imgboxObj));
 						updateImgboxForm(imgboxObj,true);
 					});
 				}
@@ -81,7 +80,7 @@ var iam = (function(iammodule) {
 				if (document.getElementById("inputModeUrl").checked){
 					var urlTest = new RegExp("(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?");
 					if (urlTest.test(imgboxForm.src.value)) {
-						alert("URL-Test is matching RegEx");
+						console.log("URL-Test is matching RegEx");
 						event.preventDefault();
 						submitImgboxForm();
 					} else {
@@ -117,7 +116,7 @@ var iam = (function(iammodule) {
 			 */
 
 			function radioButtonSelected(event) {
-				//alert("event.target: " + event.target + "with id: " + event.target.id);
+				console.log("event.target: " + event.target + "with id: " + event.target.id);
 				if (event.target.id == "inputModeUrl"){
 					imgboxForm.src.disabled = false;
 					imgboxForm.upload.disabled = true;
@@ -193,7 +192,7 @@ var iam = (function(iammodule) {
 			console.log("updateImgboxForm()");
 
 			if (imgboxObj==null){
-				alert("There is not imgbox in this topicview to delete!");
+				alert("There is no imgbox in this topicview to delete!");
 			}
 			else {
 				console.log("delete imgbox: " + JSON.stringify(imgboxObj));
@@ -204,7 +203,7 @@ var iam = (function(iammodule) {
 				});
 
 				crudops.deleteImgboxRef(topicid, function(deleted){
-					alert("got result for deleted imgboxRef: " + deleted);
+					console.log("got result for deleted imgboxRef: " + deleted);
 				});
 			}
 		}
@@ -218,11 +217,11 @@ var iam = (function(iammodule) {
 			var selectedOption = imgboxForm.querySelector("input[name='inputMode']:checked");
 			if (selectedOption.id == "inputModeUrl"){
 				var imgboxObj = {title: imgboxForm.title.value, src: imgboxForm.src.value, description: imgboxForm.description.value};
-				alert("submit: " + JSON.stringify(imgboxObj));
+				console.log("submit: " + JSON.stringify(imgboxObj));
 
 				if (imgboxObject == null){
 					crudops.createImgbox(imgboxObj, function(created){
-						alert("created: " + JSON.stringify(created));
+						console.log("created: " + JSON.stringify(created));
 						eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","created","imgbox", created));
 					});
 				}
@@ -241,7 +240,7 @@ var iam = (function(iammodule) {
 					return false;
 				}*/
 				crudops.createImgboxReference(imgboxref, function (updated){
-					alert("ImgboxFormController: topicview got imgbox updated: " + JSON.stringify(updated));
+					console.log("ImgboxFormController: topicview got imgbox updated: " + JSON.stringify(updated));
 					eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","read","imgboxref",updated));
 				});
 			}
@@ -252,19 +251,19 @@ var iam = (function(iammodule) {
 		}
 
 		function submitImgboxFormWithUpload() {
-			alert("submitImgboxFormWithUpload()!")
+			console.log("submitImgboxFormWithUpload()!")
 
 			var formData = new FormData();
 			formData.append("title",imgboxForm.title.value);
 			formData.append("description", imgboxForm.description.value);
 			formData.append("src", imgboxForm.upload.files[0]);
 
-			alert("created formdata: " + formData);
+			console.log("created formdata: " + formData);
 
 			var xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4 && xhr.status == 200){
-					//alert("got response " + xhr.responseText);
+					console.log("got response " + xhr.responseText);
 					if(imgboxObject == null) {
 						crudops.createImgbox(JSON.parse(xhr.responseText).data, function (created) {
 							eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud", "created", "imgbox", created));
@@ -278,7 +277,7 @@ var iam = (function(iammodule) {
 					}
 				}
 				else if (xhr.readyState == 4 && xhr.status == 500){
-					alert("got error, check server Log!");
+					console.log("got error, check server Log!");
 				}
 			}
 

@@ -78,9 +78,9 @@ var iam = (function(iammodule) {
 		this.updateTopicview = function(topicid, updateObj, callback) {
 			var topicviewStr = localStorage.getItem("topicview_" + topicid);
 			var topicviewObj = JSON.parse(topicviewStr);
-			alert("add: " + JSON.stringify(updateObj));
+			console.log("add: " + JSON.stringify(updateObj));
 			topicviewObj.title = updateObj.title;
-			alert("after add new title: " + JSON.stringify(topicviewObj));
+			console.log("after add new title: " + JSON.stringify(topicviewObj));
 			localStorage.setItem("topicview_" + topicid, JSON.stringify(topicviewObj));
 
 			callback(updateObj);
@@ -114,7 +114,7 @@ var iam = (function(iammodule) {
 		}
 
 		this.readImgbox = function(objid, callback) {
-			alert("readImgbox: " + objid);
+			console.log("readImgbox: " + objid);
 			var imgboxObj = JSON.parse(localStorage.getItem("imgbox_" + objid));
 			callback(imgboxObj);
 		}
@@ -123,45 +123,35 @@ var iam = (function(iammodule) {
 			var imgboxObj = JSON.parse(JSON.stringify(updateObj));
 			var imgboxID = JSON.parse(JSON.stringify(objid));
 
-			alert("want to update imgbox: " + JSON.stringify(imgboxObj));
-			alert("imgboxID: " +imgboxID);
+			console.log("want to update imgbox: " + JSON.stringify(imgboxObj));
+			console.log("imgboxID: " +imgboxID);
 
 			imgboxObj._id = imgboxID;
 
 			//process(imgboxObj,imgboxID);
 
-			alert("want to update imgbox: " + JSON.stringify(imgboxObj));
-			alert("imgboxID: " +imgboxID);
+			console.log("want to update imgbox: " + JSON.stringify(imgboxObj));
+			console.log("imgboxID: " +imgboxID);
 			localStorage.setItem("imgbox_" + imgboxID, JSON.stringify(imgboxObj));
 
 			var imgboxUpdateObj = JSON.parse(localStorage.getItem("imgbox_" + imgboxID));
 
 			callback(imgboxObj);
-
-
-			//localStorage.setItem("imgbox_" + obj._id, JSON.stringify(obj));
-			//var topicviewObj = JSON.parse(localStorage.getItem("topicview_" + topicid));
-			//topicviewObj.contentItems.push({type: "imgbox", renderContainer: "right", imgboxid: obj._id});
-			//localStorage.setItem("topicview_" + topicid, JSON.stringify(topicviewObj));
-
 		}
 
 		this.deleteImgbox = function(objid, callback) {
 			var imgboxID = JSON.parse(JSON.stringify(objid));
 			var imgboxKey = "imgbox_" + imgboxID;
-			alert("want delete: " + imgboxKey);
+			console.log("want delete: " + imgboxKey);
 			localStorage.removeItem(imgboxKey);
 			callback(objid);
 		}
 
 		this.deleteImgboxRef = function(topicid, callback) {
 			var topicviewObj = JSON.parse(localStorage.getItem("topicview_" + topicid));
-			alert("want to remove imgbox Referenz: " + JSON.stringify(topicviewObj));
-			//topicviewObj = format(JSON.stringify(topicviewObj), 'type');
-			//topicviewObj = format(JSON.stringify(topicviewObj), 'renderContainer');
-			//topicviewObj = format(JSON.stringify(topicviewObj), 'imgboxid');
+			console.log("want to remove imgbox Referenz: " + JSON.stringify(topicviewObj));
 			topicviewObj = (resetContentitems(JSON.stringify(topicviewObj), 'contentItems'));
-			alert("removed imgbox Referenz: " + JSON.stringify(topicviewObj));
+			console.log("removed imgbox Referenz: " + JSON.stringify(topicviewObj));
 			localStorage.setItem("topicview_" + topicid,JSON.stringify(topicviewObj));
 			callback(true);
 		}
@@ -170,7 +160,20 @@ var iam = (function(iammodule) {
 		 * this function is needed for creating the objectlist view
 		 */
 		this.readAllImgboxs = function(callback) {
+			console.log("readAllImgboxs!");
+			var i, imgboxObjs = [];
+			for (i in localStorage) {
+				if (localStorage.hasOwnProperty(i)) {
+					if (i.match("imgbox_.*")) {
+						value = JSON.parse(localStorage.getItem(i));
+						imgboxObjs.push(value);
+					}
+				}
+			}
+			var imgboxs = JSON.parse(JSON.stringify(imgboxObjs));
+			console.log("imgboxs were found: " + JSON.stringify(imgboxs));
 
+			callback(imgboxs);
 		}
 		/*
 		 * a helper function that gives us a String-valued id based on the current time - this is required for LDS2, requirement 2 (local ids)
@@ -209,7 +212,6 @@ var iam = (function(iammodule) {
 				process(val.items[i],imgboxID);
 			}
 		}
-
 	}
 
 	// a factory method

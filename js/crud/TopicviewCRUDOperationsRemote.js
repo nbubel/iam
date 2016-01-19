@@ -128,10 +128,10 @@ var iam =
 		}
 
 		this.createImgboxReference = function(imgboxref, callback) {
-			alert("ImgboxReference: " + JSON.stringify(imgboxref));
+			console.log("ImgboxReference: " + JSON.stringify(imgboxref));
 			xhr.update("/topicviews/" + topicid + "/contentItems", imgboxref, function (updated){
 				if (updated > 0) {
-					alert("Update:" + JSON.stringify(imgboxref));
+					console.log("Update:" + JSON.stringify(imgboxref));
 					callback(imgboxref);
 				}
 				else {
@@ -175,7 +175,7 @@ var iam =
 
 		this.deleteImgbox = function(objid, callback) {
 			xhr.deleat("/imgboxs/"+objid, null, function(deleted){
-				alert("imgbox deleted: "+ deleted);
+				console.log("imgbox deleted: "+ deleted);
 				if (deleted > 0){
 					callback(objid);
 				}

@@ -20,16 +20,14 @@ var iam = (function(iammodule) {
 		
 		function initialiseView() {
 			console.log("initialiseImgboxlist()");
-			//alert("initialiseImgboxlist()");
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","readall","imgbox"), function (event){
 
 				imgboxObjs = event;
 
-				//alert("imgbox created: " + JSON.stringify(event));
-				//showImgbox(event.data);
+				console.log("imgbox created: " + JSON.stringify(event));
 
-				alert("IMAGEBOXLIST: read " + event.data.length + " all imgboxes: " + JSON.stringify(event.data));
+				console.log("ImageboxlisViewController: read " + event.data.length + " all imgboxes: " + JSON.stringify(event.data));
 
 				var countImgboxes = 0;
 
@@ -41,7 +39,7 @@ var iam = (function(iammodule) {
 
 				}
 
-				alert("Get " + countImgboxes + " imagesboxes in imgboxList!")
+				console.log("Get " + countImgboxes + " imagesboxes in imgboxList!")
 
 			});
 
@@ -52,7 +50,7 @@ var iam = (function(iammodule) {
 					imgboxlistRoot.removeChild(imgboxlistRoot.firstChild);
 				}
 
-				alert("IMAGEBOXLIST: read " + imgboxObjs.data.length + " all imgboxes: " + JSON.stringify(imgboxObjs.data));
+				console.log("ImgboxListViewController: read " + imgboxObjs.data.length + " all imgboxes: " + JSON.stringify(imgboxObjs.data));
 
 				var countImgboxes = 0;
 
@@ -64,38 +62,38 @@ var iam = (function(iammodule) {
 
 				}
 
-				alert("Get " + countImgboxes + " imagesboxes in imgboxList!")
+				console.log("Get " + countImgboxes + " imagesboxes in imgboxList!")
 
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","deleted","imgbox"), function (event){
-				alert("imgbox deleted: " + JSON.stringify(event.data));
-				alert("DOM: remove id:" + JSON.stringify(event.data));
+				console.log("imgbox deleted: " + JSON.stringify(event.data));
+				console.log("DOM: remove id:" + JSON.stringify(event.data));
 				removeImgbox(event.data);
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","created","imgbox"), function (event){
-				alert("imgbox created: " + JSON.stringify(event));
-				alert("DOM: create to List imgbox" + JSON.stringify(event.data));
+				console.log("imgbox created: " + JSON.stringify(event));
+				console.log("DOM: create to List imgbox" + JSON.stringify(event.data));
 				showImgbox(event.data);
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","updated","imgbox"), function (event){
-				alert("imgbox created: " + JSON.stringify(event));
-				alert("DOM: create to List imgbox" + JSON.stringify(event.data));
+				console.log("imgbox created: " + JSON.stringify(event));
+				console.log("DOM: create to List imgbox" + JSON.stringify(event.data));
 				removeImgbox(event.data._id);
 				showImgbox(event.data);
 			});
 
 			eventDispatcher.addEventListener(iam.lib.eventhandling.customEvent("crud","choose","imgboxlist"),function(event){
 
-				alert("ImgboxListView choose Imgboxlist: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
+				console.log("ImgboxListView choose Imgboxlist: got" + event.type + "event for imgbox:" + JSON.stringify(event.data));
 				var imgboxlistRoot = document.getElementById("imgboxListTable");
 				while (imgboxlistRoot.firstChild) {
 					imgboxlistRoot.removeChild(imgboxlistRoot.firstChild);
 				}
 
-				alert("IMAGEBOXLIST: read " + event.data.length + " all imgboxes: " + JSON.stringify(event.data));
+				console.log("ImgbboxListViewController: read " + event.data.length + " all imgboxes: " + JSON.stringify(event.data));
 
 				var countImgboxes = 0;
 
@@ -107,7 +105,7 @@ var iam = (function(iammodule) {
 
 				}
 
-				alert("Get " + countImgboxes + " imagesboxes in imgboxList!")
+				console.log("Get " + countImgboxes + " imagesboxes in imgboxList!")
 
 			});
 
@@ -117,7 +115,7 @@ var iam = (function(iammodule) {
 				if (imgboxObjs) {
 					eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud", "readall", "imgbox", imgboxObjs));
 				} else {
-					alert("No Imageboxs were found!")
+					console.log("ImgboxlistViewController: No imageboxs were found!")
 				}
 			});
 
@@ -178,7 +176,7 @@ var iam = (function(iammodule) {
 				//imgel.parentNode.removeChild(imgel);
 			}
 			else{
-				alert("Listview: keine imgboxID zum löschen übergeben worden.")
+				console.log("Listview: keine imgboxID zum löschen übergeben worden.")
 			}
 		}
 
@@ -187,12 +185,12 @@ var iam = (function(iammodule) {
 		 */
 
 		function radioButtonSelected(event) {
-			alert("event.target: " + event.target + "with id: " + event.target.id);
+			console.log("event.target: " + event.target + "with id: " + event.target.id);
 
 			//var selectedOption = document.querySelector("input[name='imgbox']:checked");
 			var imgboxid = event.target.id;//selectedOption.class;
 
-			alert("with id: " + imgboxid);
+			console.log("with id: " + imgboxid);
 
 			eventDispatcher.notifyListeners(iam.lib.eventhandling.customEvent("crud","choose","formview",imgboxid));
 

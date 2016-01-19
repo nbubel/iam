@@ -93,20 +93,20 @@ var iam = (function(iammodule) {
 			 */
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","created","imgbox"), function(event){
-				alert("create imgbox-Tab by create Image");
+				console.log("create imgbox-Tab by create Image");
 				showAddElementForm("imgbox");
 				initialiseAddElementForm("imgbox");
 				//selectTab("imgbox");
 			});
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","read","imgbox"), function(event){
-				alert("create imgbox-Tab by read Image");
+				console.log("create imgbox-Tab by read Image");
 				showAddElementForm("imgbox");
 			});
 
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","deleted","imgbox"), function(event){
-				alert("hide imgbox-Tab");
+				console.log("hide imgbox-Tab");
 				hideTabForElementtype("imgbox");
 				selectTab("title");
 				if (document.getElementById("imgboxListTable").rows.length == 0) {
@@ -115,12 +115,12 @@ var iam = (function(iammodule) {
 			});
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","choose","imgboxlist"),function(event){
-				alert("Editview choose Imgboxlist!");
+				console.log("Editview choose Imgboxlist!");
 				selectTab("imgboxlist");
 			});
 
 			eventDispatcher.addEventListener(eventhandling.customEvent("crud","choose","formview"),function(event){
-				alert("Editview choose Formview!");
+				console.log("Editview choose Formview!");
 				selectTab("imgbox");
 			});
 		}
